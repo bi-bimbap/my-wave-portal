@@ -1,13 +1,7 @@
-# Sample Hardhat Project
+This is a website called the Wave Portal -- it's a place where somebody can learn a bit about me and send me a 👋 + a message where the data is saved on the Ethereum blockchain through a smart contract.
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
+This development of this website involves:
+- Solidity 
+- Hardhat
+- JavaScript
+- React.js
