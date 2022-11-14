@@ -3,27 +3,38 @@ const main = async () => {
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
     // create new local Ethereum network
     // contructor will be called here
-    const waveContract = await waveContractFactory.deploy();
+    const waveContract = await waveContractFactory.deploy({
+      value: hre.ethers.utils.parseEther("0.0001")
+    });
     await waveContract.deployed();
     console.log("Contract address: ", waveContract.address);
 
-    let waveCount;
-    waveCount = await waveContract.getTotalWaves();
-    console.log(waveCount.toNumber());
+    // get contract balance before waving
+    let contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
+    console.log("Contract balance: ", hre.ethers.utils.formatEther(contractBalance));
 
-    let waveTxn = await waveContract.wave("A message!");
-    await waveTxn.wait(); // wait for transaction to be mined/go through
-
-    // get wallet address of contract owner & some random wallet
-    // the first value in array will always be owner
-    const [owner, randomPerson] = await hre.ethers.getSigners();
-    // connect() is a hardhat function to allow another address to interact with contract
-    // this simulates a different person waving
-    waveTxn = await waveContract.connect(randomPerson).wave("Another message");
+    // send wave
+    let waveTxn = await waveContract.wave("A message");
     await waveTxn.wait();
+
+    // get contract balance after waving
+    contractBalance = await hre.ethers.provider.getBalance(waveContract.address);
+    console.log("Contract balance: ", hre.ethers.utils.formatEther(contractBalance));
 
     let allWaves = await waveContract.getAllWaves();
     console.log(allWaves);
+
+    // let waveCount;
+    // waveCount = await waveContract.getTotalWaves();
+    // console.log(waveCount.toNumber());
+
+    // // get wallet address of contract owner & some random wallet
+    // // the first value in array will always be owner
+    // const [owner, randomPerson] = await hre.ethers.getSigners();
+    // // connect() is a hardhat function to allow another address to interact with contract
+    // // this simulates a different person waving
+    // waveTxn = await waveContract.connect(randomPerson).wave("Another message");
+    // await waveTxn.wait();
 };
 
 const runMain = async () => {
