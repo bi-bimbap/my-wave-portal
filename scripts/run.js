@@ -1,29 +1,29 @@
 const main = async () => {
-    // get wallet address of contract owner & some random wallet
-    // the first value in array will always be owner
-    const [owner, randomPerson] = await hre.ethers.getSigners();
     // compile contract & generate "artifacts" directory
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
     // create new local Ethereum network
     // contructor will be called here
     const waveContract = await waveContractFactory.deploy();
+    await waveContract.deployed();
+    console.log("Contract address: ", waveContract.address);
 
-    console.log("Contract deployed to: ", waveContract.address);
-    console.log("Contract deployed by: ", owner.address);
+    let waveCount;
+    waveCount = await waveContract.getTotalWaves();
+    console.log(waveCount.toNumber());
 
-    await waveContract.getTotalWaves();
+    let waveTxn = await waveContract.wave("A message!");
+    await waveTxn.wait(); // wait for transaction to be mined/go through
 
-    const firstWaveTxn = await waveContract.wave(); // wave() returns a transaction object
-    await firstWaveTxn.wait(); // wait for transaction to be mined/go through
-
-    await waveContract.getTotalWaves();
-
+    // get wallet address of contract owner & some random wallet
+    // the first value in array will always be owner
+    const [owner, randomPerson] = await hre.ethers.getSigners();
     // connect() is a hardhat function to allow another address to interact with contract
     // this simulates a different person waving
-    const secondWaveTxn = await waveContract.connect(randomPerson).wave();
-    await secondWaveTxn.wait();
+    waveTxn = await waveContract.connect(randomPerson).wave("Another message");
+    await waveTxn.wait();
 
-    await waveContract.getTotalWaves();
+    let allWaves = await waveContract.getAllWaves();
+    console.log(allWaves);
 };
 
 const runMain = async () => {

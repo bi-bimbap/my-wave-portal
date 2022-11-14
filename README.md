@@ -5,3 +5,5 @@ This development of this website involves:
 - Hardhat
 - JavaScript
 - React.js
+- Ethers.js
+- QuickNode
